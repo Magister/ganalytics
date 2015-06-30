@@ -495,7 +495,7 @@ class Ganalytics extends Module
 				'price' => number_format($product['price'], '2')
 			);
 
-			$ga_product = array_map('urlencode', $ga_product);
+			//$ga_product = array_map('urlencode', $ga_product);
 		}
 
 		return $ga_product;
