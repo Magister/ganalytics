@@ -39,7 +39,7 @@ class Ganalytics extends Module
 	{
 		$this->name = 'ganalytics';
 		$this->tab = 'analytics_stats';
-		$this->version = '2.3.3';
+		$this->version = '2.3.4';
 		$this->author = 'PrestaShop';
 		$this->module_key = 'fd2aaefea84ac1bb512e6f1878d990b8';
 		$this->bootstrap = true;
@@ -364,6 +364,7 @@ class Ganalytics extends Module
 
 		if ($controller_name == 'order' || $controller_name == 'orderopc')
 		{
+			$this->js_state = 1;
 			$this->eligible = 1;
 			$step = Tools::getValue('step');
 			if (empty($step))
@@ -527,10 +528,10 @@ class Ganalytics extends Module
 		{
 			$ga_product = array(
 				'id' => $product_id,
-				'name' => Tools::jsonEncode($product['name']),
-				'category' => Tools::jsonEncode($product['category']),
-				'brand' => isset($product['manufacturer_name']) ? Tools::jsonEncode($product['manufacturer_name']) : '',
-				'variant' => Tools::jsonEncode($variant),
+				'name' => Tools::str2url($product['name']),
+				'category' => Tools::str2url($product['category']),
+				'brand' => isset($product['manufacturer_name']) ? Tools::str2url($product['manufacturer_name']) : '',
+				'variant' => Tools::str2url($variant),
 				'type' => $product_type,
 				'position' => $index ? $index : '0',
 				'quantity' => $product_qty,
@@ -543,7 +544,7 @@ class Ganalytics extends Module
 		{
 			$ga_product = array(
 				'id' => $product_id,
-				'name' => Tools::jsonEncode($product['name'])
+				'name' => Tools::str2url($product['name'])
 			);
 		}
 		return $ga_product;
@@ -729,7 +730,7 @@ class Ganalytics extends Module
 							$transaction = $this->wrapOrder($row['id_order']);
 							if (!empty($transaction))
 							{
-								Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'ganalytics` SET date_add = NOW(), sent = 1 WHERE id_order = '.(int)$row['id_order'].' AND id_shop = \''.(int)$this->context->shop->id.'\' LIMIT 1');
+								Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'ganalytics` SET date_add = NOW(), sent = 1 WHERE id_order = '.(int)$row['id_order'].' AND id_shop = \''.(int)$this->context->shop->id.'\'');
 								$transaction = Tools::jsonEncode($transaction);
 								$ga_scripts .= 'MBG.addTransaction('.$transaction.');';
 							}
